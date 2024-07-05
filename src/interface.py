@@ -1,7 +1,6 @@
 import customtkinter as ctk
-import tkinter as tk
 from PIL import Image, ImageTk
-import login
+import src.login as login
 
 class Interface(ctk.CTk):
     def __init__(self):

@@ -1,19 +1,38 @@
 import bcrypt
 import mysql.connector
 
+bd = mysql.connector.connect(
+    host="localhost", 
+    user="root",
+    password=""
+)
+
 def conectar_bd():
     try:
         conn = mysql.connector.connect(
             host="localhost",
             user="root",
             password="",
-            database="despesas_pessoais_db"
         )
         if conn.is_connected():
-            print("conectado ao servidor mysql")
+            print("Conectado ao servidor MySQL")
             return conn
-    except Exception as e:
-        print(f"Aconteceu algo de errado: {e}")
+    except mysql.connector.Error as e:
+        print(f"Aconteceu algo de errado ao conectar: {e}")
+
+def cadastro(usuário):
+    servidor_bd = conectar_bd()
+    if not servidor_bd:
+        return
+
+    cursor = servidor_bd.cursor()
+    cursor.execute("CREATE DATABASE IF NOT EXISTS despesas_pessoais_bd")
+    print("Banco de dados criado com sucesso")
+
+    cursor.execute("USE despesas_pessoais_bd")
+    cursor.execute("SHOW TABLES")
+    # Aqui você pode adicionar a criação de tabelas ou outras operações no banco de dados
+
 
 def criptografar_senha(senha):
     
@@ -23,8 +42,6 @@ def criptografar_senha(senha):
 
     return senha_criptografada
 
-def cadastro(usuário):
-    servidor_bd = conectar_bd()
 
 
 def verifica_nome_usuário(nomeUsuário):
@@ -40,3 +57,5 @@ def verificar_senha(self):
             criptografar_senha(self.senha_value.get())
     else:
         print("Senhas diferentes")
+
+cadastro("hg")
