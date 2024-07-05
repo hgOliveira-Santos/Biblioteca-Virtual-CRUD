@@ -1,13 +1,15 @@
 import customtkinter as ctk
 import tkinter as tk
 from PIL import Image, ImageTk
+import login
 
 class Interface(ctk.CTk):
     def __init__(self):
         super().__init__()
         self.layout_config()
         self.aparência()
-        self.sistema()
+        #self.sistema()
+        self.interface_cadastro()
 
     def layout_config(self):
         self.geometry("1000x550+450+200")
@@ -17,12 +19,20 @@ class Interface(ctk.CTk):
     def aparência(self):
         ctk.set_appearance_mode("light")
 
-    def sistema(self):
+    """    def sistema(self):
         #head_frame = ctk.CTkFrame(master=self, width=1000, height=80, bg_color="#037899", fg_color="#037899")
         #head_frame.place(x=0, y=0)
 
-        conta_label  = ctk.CTkLabel(master=self, text="Criar conta", font=('Century Gothic', 26), text_color="#000")
-        conta_label.place(x=170, y=100)
+        imagem = Image.open('images/dinheiro.jpg')
+        imagem_dinheiro = ImageTk.PhotoImage(imagem)
+
+        imagem_label = ctk.CTkLabel(master=self, image=imagem_dinheiro)
+        imagem_label.place(x=500)"""
+
+
+    def interface_cadastro(self):
+
+        self.limpa_tela()
 
         imagem = Image.open('images/dinheiro.jpg')
         imagem_dinheiro = ImageTk.PhotoImage(imagem)
@@ -30,13 +40,13 @@ class Interface(ctk.CTk):
         imagem_label = ctk.CTkLabel(master=self, image=imagem_dinheiro)
         imagem_label.place(x=500)
 
-        self.interface_cadastro()
-
-    def interface_cadastro(self):
 
         self.usuário_value = ctk.StringVar()
         self.senha_value = ctk.StringVar()
         self.confirmar_senha_value = ctk.StringVar()
+
+        conta_label  = ctk.CTkLabel(master=self, text="Criar conta", font=('Century Gothic', 26), text_color="#000")
+        conta_label.place(x=170, y=100)
 
         usuário_label = ctk.CTkLabel(master=self, text="Usuário:", font=('Roboto', 16), text_color="#000")
         usuário_label.place(x=40, y=150)
@@ -62,10 +72,22 @@ class Interface(ctk.CTk):
         possui_conta_label = ctk.CTkLabel(master=self, text="Já possui uma conta?", text_color="#012", font=("Roboto", 12))
         possui_conta_label.place(x=90, y=410)
 
-        fazer_login_button = ctk.CTkButton(master=self, text="Faça login aqui", text_color="#012", font=("Roboto bold", 12), width=210, corner_radius=10, hover_color="#5aa0a0", fg_color="#acc", bg_color="transparent")
+        fazer_login_button = ctk.CTkButton(master=self, text="Faça login aqui", command=self.interface_login, text_color="#012", font=("Roboto bold", 12), width=210, corner_radius=10, hover_color="#5aa0a0", fg_color="#acc", bg_color="transparent")
         fazer_login_button.place(x=250, y=410)
 
     def interface_login(self):
+
+        self.limpa_tela()
+
+        imagem = Image.open('images/dinheiro.jpg')
+        imagem_dinheiro = ImageTk.PhotoImage(imagem)
+
+        imagem_label = ctk.CTkLabel(master=self, image=imagem_dinheiro)
+        imagem_label.place(x=500)
+
+
+        conta_label  = ctk.CTkLabel(master=self, text="Login", font=('Century Gothic', 26), text_color="#000")
+        conta_label.place(x=215, y=100)
 
         self.usuário_value = ctk.StringVar()
         self.senha_value = ctk.StringVar()
@@ -88,20 +110,16 @@ class Interface(ctk.CTk):
         não_possui_conta_label = ctk.CTkLabel(master=self, text="Não possui uma conta?", text_color="#012", font=("Roboto", 12))
         não_possui_conta_label.place(x=90, y=360)
 
-        fazer_cadastro_button = ctk.CTkButton(master=self, text="Cadastre-se aqui", text_color="#012", font=("Roboto bold", 12), width=210, corner_radius=10, hover_color="#5aa0a0", fg_color="#acc", bg_color="transparent")
+        fazer_cadastro_button = ctk.CTkButton(master=self, text="Cadastre-se aqui", command=self.interface_cadastro, text_color="#012", font=("Roboto bold", 12), width=210, corner_radius=10, hover_color="#5aa0a0", fg_color="#acc", bg_color="transparent")
         fazer_cadastro_button.place(x=250, y=360)
 
-    def verifica_cadastro(self):
-        pass
+    def limpa_tela(self):
+        for itens in self.winfo_children():
+            itens.destroy()
 
+    def fazer_cadastro(self):
+        login.cadastro(self.usuário_value.get())
 
-    def verificar_senha(self):
-        if self.senha_value.get() == self.confirmar_senha_value.get():
-            print("tudo certo")
-        else:
-            print("Senhas diferentes")
-
-        
 
 
 
