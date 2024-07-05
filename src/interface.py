@@ -1,6 +1,7 @@
 import customtkinter as ctk
 from PIL import Image, ImageTk
-import src.login as login
+import login
+from gerenciador import GerenciadorBD
 
 class Interface(ctk.CTk):
     def __init__(self):
@@ -9,6 +10,7 @@ class Interface(ctk.CTk):
         self.aparência()
         #self.sistema()
         self.interface_cadastro()
+        self.gerenciador = GerenciadorBD()
 
     def layout_config(self):
         self.geometry("1000x550+450+200")
@@ -52,6 +54,8 @@ class Interface(ctk.CTk):
 
         usuário_input = ctk.CTkEntry(master=self, textvariable=self.usuário_value, width=420, corner_radius=10, fg_color="transparent", font=('Century Gothic', 16), text_color="#000")
         usuário_input.place(x=40, y=180)
+
+        self.verifica_nome_usuário()
 
         senha_label = ctk.CTkLabel(master=self, text="Senha: ", font=('Roboto', 16), text_color="#000")
         senha_label.place(x=40, y=220)
@@ -119,6 +123,18 @@ class Interface(ctk.CTk):
     def fazer_cadastro(self):
         login.cadastro(self.usuário_value.get())
 
+    def verificar_senha(self):
+        if self.senha_value.get() == self.confirmar_senha_value.get():
+            if len(self.senha_value.get()) < 8:
+                print("Sua senha deve ter 8 caracteres")
+            else:
+                print("tudo certo")
+                login.criptografar_senha(self.senha_value.get())
+        else:
+            print("Senhas diferentes")
+       
+    def verifica_nome_usuário(self):
+        pass
 
 
 
