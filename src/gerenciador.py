@@ -2,11 +2,10 @@ import bcrypt
 import mysql.connector
 
 class GerenciadorBD:
-    def __init__(self, host="localhost", user="root", password="", database="despesas_pessoais_bd"):
+    def __init__(self, host="localhost", user="root", password=""):
         self.host = host
         self.user = user
         self.password = password
-        self.database = database
         self.conn = None
         self.conectar_bd()
 
@@ -111,6 +110,28 @@ class GerenciadorBD:
         except mysql.connector.Error as e:
             print(f"Erro ao cadastrar usuário: {e}")
             return False
+        
+    def login(self, nomeUsuário, usuárioSenha):
+        if self.verifica_login(nomeUsuário, usuárioSenha):
+            pass
+        
+
+    def verifica_login(self, nome, senha):
+        try:
+            cursor = self.conn.cursor()
+            query = "SELECT COUNT(*) FROM Users WHERE username = %s"
+            cursor.execute(query, (nome, senha,))
+            resultado = cursor.fetchone()[0]
+
+            if resultado == 1:
+                print("Usuário aceito!")
+                return True
+            else:
+                print("Usuário não cadastrado!")
+                return False
+            
+        except Exception as e:
+            print(f"Erro ao verificar login: {e}")
 
 
     def criptografar_senha(self, senha):

@@ -9,7 +9,7 @@ class Interface(ctk.CTk):
         self.layout_config()
         self.aparência()
         #self.sistema()
-        self.interface_cadastro()
+        self.interface_login()
         self.gerenciador = GerenciadorBD()
 
     def layout_config(self):
@@ -78,6 +78,33 @@ class Interface(ctk.CTk):
         fazer_login_button = ctk.CTkButton(master=self, text="Faça login aqui", command=self.interface_login, text_color="#012", font=("Roboto bold", 12), width=210, corner_radius=10, hover_color="#5aa0a0", fg_color="#acc", bg_color="transparent")
         fazer_login_button.place(x=250, y=410)
 
+
+    def fazer_cadastro(self):
+
+        if len(self.usuário_value.get()) < 4:
+            messagebox.showwarning("Erro", "O nome de usuário deve ter pelo menos 4 caracteres!")
+            return
+        else:
+            conf_nome_usuário = self.gerenciador.verificar_nome_usuário(self.usuário_value.get())
+            if not conf_nome_usuário:
+                messagebox.showerror("Erro", "Nome de usuário já cadastrado!")
+                return
+        
+        if len(self.senha_value.get()) < 8:
+            messagebox.showerror("Aviso", "Sua senha deve ter pelo menos 8 caracteres!")
+            return
+        
+        if self.senha_value.get() != self.confirmar_senha_value.get():
+            messagebox.showerror("Aviso", "As senhas fornecidas são diferentes!")
+            return
+        
+        if self.gerenciador.cadastrar(self.usuário_value.get(), self.senha_value.get()):
+            #chamada para a próxima interface
+            pass
+        else:
+            messagebox.showerror("Erro", "Erro ao cadastrar usuário!")
+
+
     def interface_login(self):
 
         self.limpa_tela()
@@ -107,7 +134,7 @@ class Interface(ctk.CTk):
         senha_input = ctk.CTkEntry(master=self, textvariable=self.senha_value, show="*", width=420, corner_radius=10, fg_color="transparent")
         senha_input.place(x=40, y=260)
 
-        cadastrar_bt = ctk.CTkButton(master=self, text="Entrar", command=None, width=420, height=35, corner_radius=10, fg_color="#039999", hover_color="#046979")
+        cadastrar_bt = ctk.CTkButton(master=self, text="Entrar", command=self.interface_login, width=420, height=35, corner_radius=10, fg_color="#039999", hover_color="#046979")
         cadastrar_bt.place(x=40, y=310)
 
         não_possui_conta_label = ctk.CTkLabel(master=self, text="Não possui uma conta?", text_color="#012", font=("Roboto", 12))
@@ -116,33 +143,15 @@ class Interface(ctk.CTk):
         fazer_cadastro_button = ctk.CTkButton(master=self, text="Cadastre-se aqui", command=self.interface_cadastro, text_color="#012", font=("Roboto bold", 12), width=210, corner_radius=10, hover_color="#5aa0a0", fg_color="#acc", bg_color="transparent")
         fazer_cadastro_button.place(x=250, y=360)
 
-    def limpa_tela(self):
-        for iten in self.winfo_children():
-            iten.destroy()
 
-    def fazer_cadastro(self):
-        conf_nome_usuário = self.gerenciador.verificar_nome_usuário(self.usuário_value.get())
-        if not conf_nome_usuário:
-            messagebox.showerror("Erro", "Nome de usuário já cadastrado!")
-            return
-        
-        if len(self.senha_value.get()) < 8:
-            messagebox.showerror("Aviso", "Sua senha deve ter pelo menos 8 caracteres!")
-            return
-        
-        if self.senha_value.get() != self.confirmar_senha_value.get():
-            messagebox.showerror("Aviso", "As senhas fornecidas são diferentes!")
-            return
-        
-        if self.gerenciador.cadastrar(self.usuário_value.get(), self.senha_value.get()):
-            #chamada para a próxima interface
-            pass
-        else:
-            messagebox.showerror("Erro", "Erro ao cadastrar usuário!")
-
-        
-    def verifica_nome_usuário(self):
+    def fazer_login(self):
         pass
+
+
+
+    def limpa_tela(self):
+        for item in self.winfo_children():
+            item.destroy()
 
 
 
