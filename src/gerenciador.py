@@ -2,52 +2,86 @@ import bcrypt
 import mysql.connector
 
 class GerenciadorBD:
-    def __init__(self, host="localhost", user="root", password=""):
+    def __init__(self, host="localhost", user="root", password="", database="despesas_pessoais_bd"):
         self.host = host
         self.user = user
         self.password = password
-        self.conn = None  # Conexão será estabelecida quando necessário
+        self.database = database
+        self.conn = None
+        self.conectar_bd()
+
 
     def conectar_bd(self):
         try:
             self.conn = mysql.connector.connect(
                 host=self.host,
                 user=self.user,
-                password=self.password
+                password=self.password,
             )
             if self.conn.is_connected():
                 print("Conectado ao servidor MySQL")
-                self.criar_tabelas()
+
+                self.criar_banco_de_dados()
+                self.usar_banco_de_dados()
+
+                self.criar_tabela_users()
+                self.criar_tabela_categorias_despesas()
+                self.criar_tabela_despesas()
+
                 return True
+
         except mysql.connector.Error as e:
             print(f"Aconteceu algo de errado ao conectar: {e}")
             return False
 
-    def criar_tabelas(self):
+
+    def criar_banco_de_dados(self):
         try:
             cursor = self.conn.cursor()
-
-            # Criar o banco de dados se não existir
             cursor.execute("CREATE DATABASE IF NOT EXISTS despesas_pessoais_bd")
             print("Banco de dados criado com sucesso")
+        except mysql.connector.Error as e:
+            print(f"Aconteceu algo de errado ao criar o banco de dados: {e}")
 
-            # Usar o banco de dados criado
+
+    def usar_banco_de_dados(self):
+        try:
+            cursor = self.conn.cursor()
             cursor.execute("USE despesas_pessoais_bd")
+        except mysql.connector.Error as e:
+            print(f"Aconteceu algo de errado ao usar o banco de dados: {e}")
 
-            # Criar tabela Users
+
+    def criar_tabela_users(self):
+        try:
+            cursor = self.conn.cursor()
             cursor.execute("""CREATE TABLE IF NOT EXISTS Users (
                                 id INT AUTO_INCREMENT PRIMARY KEY,
                                 username VARCHAR(255) NOT NULL,
                                 password VARCHAR(255) NOT NULL
                             )""")
+            print("Tabela Users criada com sucesso")
+            self.conn.commit()
+        except mysql.connector.Error as e:
+            print(f"Aconteceu algo de errado ao criar a tabela Users: {e}")
 
-            # Criar tabela Categorias_Despesas
+
+    def criar_tabela_categorias_despesas(self):
+        try:
+            cursor = self.conn.cursor()
             cursor.execute("""CREATE TABLE IF NOT EXISTS Categorias_Despesas (
                                 id INT AUTO_INCREMENT PRIMARY KEY,
                                 nome_categoria VARCHAR(255) NOT NULL
                             )""")
+            print("Tabela Categorias_Despesas criada com sucesso")
+            self.conn.commit()
+        except mysql.connector.Error as e:
+            print(f"Aconteceu algo de errado ao criar a tabela Categorias_Despesas: {e}")
 
-            # Criar tabela Despesas
+
+    def criar_tabela_despesas(self):
+        try:
+            cursor = self.conn.cursor()
             cursor.execute("""CREATE TABLE IF NOT EXISTS Despesas (
                                 id INT AUTO_INCREMENT PRIMARY KEY,
                                 user_id INT NOT NULL,
@@ -58,10 +92,26 @@ class GerenciadorBD:
                                 FOREIGN KEY (user_id) REFERENCES Users(id),
                                 FOREIGN KEY (categoria_id) REFERENCES Categorias_Despesas(id)
                             )""")
-            
-            cursor.close()
+            print("Tabela Despesas criada com sucesso")
+            self.conn.commit()
         except mysql.connector.Error as e:
-            print(f"Aconteceu algo de errado ao criar tabelas: {e}")
+            print(f"Aconteceu algo de errado ao criar a tabela Despesas: {e}")
+
+    
+    def cadastrar(self, nomeUsuario, usuarioSenha):
+        senha = self.criptografar_senha(usuarioSenha)
+
+        try:
+            cursor = self.conn.cursor()
+            query = "INSERT INTO Users VALUES (NULL, %s, %s)"
+            cursor.execute(query, (nomeUsuario, senha,))
+            self.conn.commit()
+            print("Usuário cadastrado")
+            return True
+        except mysql.connector.Error as e:
+            print(f"Erro ao cadastrar usuário: {e}")
+            return False
+
 
     def criptografar_senha(self, senha):
         try:
@@ -71,25 +121,13 @@ class GerenciadorBD:
         except Exception as e:
             print(f"Aconteceu algo de errado ao criptografar senha: {e}")
             return None
+        
 
-
-    def verificar_senha(self, senha, confirmacaoSenha):
-        if senha == confirmacaoSenha:
-            if len(senha) < 8:
-                print("Sua senha deve ter pelo menos 8 caracteres.")
-            else:
-                print("Tudo certo.")
-                return True
-        else:
-            print("Senhas diferentes.")
-        return False
-
-
-    def verificar_username(self, username):
+    def verificar_nome_usuário(self, nomeUsuário):
         try:
             cursor = self.conn.cursor()
             query = "SELECT COUNT(*) FROM Users WHERE username = %s"
-            cursor.execute(query, (username,))
+            cursor.execute(query, (nomeUsuário,))
             resultado = cursor.fetchone()[0]
 
             if resultado != 0:
@@ -97,14 +135,13 @@ class GerenciadorBD:
                 return False
             else:
                 print("Nome de usuário aceito!")
+                self.conn.commit()
                 return True
-            
-            cursor.close()
 
         except mysql.connector.Error as e:
             print(f"Aconteceu um erro: {e}")
 
-        finally:
-            self.conn.close()
-        
 
+"""
+app = GerenciadorBD()
+app.cadastrar("hugo", "hg123456")"""

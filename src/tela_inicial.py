@@ -1,6 +1,6 @@
 import customtkinter as ctk
 from PIL import Image, ImageTk
-import login
+from tkinter import messagebox
 from gerenciador import GerenciadorBD
 
 class Interface(ctk.CTk):
@@ -55,7 +55,7 @@ class Interface(ctk.CTk):
         usuário_input = ctk.CTkEntry(master=self, textvariable=self.usuário_value, width=420, corner_radius=10, fg_color="transparent", font=('Century Gothic', 16), text_color="#000")
         usuário_input.place(x=40, y=180)
 
-        self.verifica_nome_usuário()
+        #self.verifica_nome_usuário()
 
         senha_label = ctk.CTkLabel(master=self, text="Senha: ", font=('Roboto', 16), text_color="#000")
         senha_label.place(x=40, y=220)
@@ -69,7 +69,7 @@ class Interface(ctk.CTk):
         confirmar_senha_input = ctk.CTkEntry(master=self, textvariable=self.confirmar_senha_value, show="*", width=420, corner_radius=10, fg_color="transparent")
         confirmar_senha_input.place(x=40, y=320)        
 
-        cadastrar_bt = ctk.CTkButton(master=self, text="Cadastrar", command=self.verificar_senha, width=420, height=35, corner_radius=10, fg_color="#039999", hover_color="#046979")
+        cadastrar_bt = ctk.CTkButton(master=self, text="Cadastrar", command=self.fazer_cadastro, width=420, height=35, corner_radius=10, fg_color="#039999", hover_color="#046979")
         cadastrar_bt.place(x=40, y=360)
 
         possui_conta_label = ctk.CTkLabel(master=self, text="Já possui uma conta?", text_color="#012", font=("Roboto", 12))
@@ -117,22 +117,30 @@ class Interface(ctk.CTk):
         fazer_cadastro_button.place(x=250, y=360)
 
     def limpa_tela(self):
-        for itens in self.winfo_children():
-            itens.destroy()
+        for iten in self.winfo_children():
+            iten.destroy()
 
     def fazer_cadastro(self):
-        login.cadastro(self.usuário_value.get())
-
-    def verificar_senha(self):
-        if self.senha_value.get() == self.confirmar_senha_value.get():
-            if len(self.senha_value.get()) < 8:
-                print("Sua senha deve ter 8 caracteres")
-            else:
-                print("tudo certo")
-                login.criptografar_senha(self.senha_value.get())
+        conf_nome_usuário = self.gerenciador.verificar_nome_usuário(self.usuário_value.get())
+        if not conf_nome_usuário:
+            messagebox.showerror("Erro", "Nome de usuário já cadastrado!")
+            return
+        
+        if len(self.senha_value.get()) < 8:
+            messagebox.showerror("Aviso", "Sua senha deve ter pelo menos 8 caracteres!")
+            return
+        
+        if self.senha_value.get() != self.confirmar_senha_value.get():
+            messagebox.showerror("Aviso", "As senhas fornecidas são diferentes!")
+            return
+        
+        if self.gerenciador.cadastrar(self.usuário_value.get(), self.senha_value.get()):
+            #chamada para a próxima interface
+            pass
         else:
-            print("Senhas diferentes")
-       
+            messagebox.showerror("Erro", "Erro ao cadastrar usuário!")
+
+        
     def verifica_nome_usuário(self):
         pass
 
