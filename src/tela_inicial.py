@@ -3,7 +3,7 @@ from PIL import Image, ImageTk
 from tkinter import messagebox
 from gerenciador import GerenciadorBD
 
-class Interface(ctk.CTk):
+class InterfaceInicial(ctk.CTk):
     def __init__(self):
         super().__init__()
         self.layout_config()
@@ -155,5 +155,5 @@ class Interface(ctk.CTk):
 
 
 
-teste = Interface()
+teste = InterfaceInicial()
 teste.mainloop()
