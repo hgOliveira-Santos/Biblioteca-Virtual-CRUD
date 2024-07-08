@@ -22,10 +22,7 @@ class GerenciadorBD:
 
                 self.criar_banco_de_dados()
                 self.usar_banco_de_dados()
-
                 self.criar_tabela_users()
-                self.criar_tabela_categorias_despesas()
-                self.criar_tabela_despesas()
 
                 return True
 
@@ -33,11 +30,10 @@ class GerenciadorBD:
             print(f"Aconteceu algo de errado ao conectar: {e}")
             return False
 
-
     def criar_banco_de_dados(self):
         try:
             cursor = self.conn.cursor()
-            cursor.execute("CREATE DATABASE IF NOT EXISTS despesas_pessoais_bd")
+            cursor.execute("CREATE DATABASE IF NOT EXISTS usuarios_bd")
             print("Banco de dados criado com sucesso")
         except mysql.connector.Error as e:
             print(f"Aconteceu algo de errado ao criar o banco de dados: {e}")
@@ -46,7 +42,7 @@ class GerenciadorBD:
     def usar_banco_de_dados(self):
         try:
             cursor = self.conn.cursor()
-            cursor.execute("USE despesas_pessoais_bd")
+            cursor.execute("USE usuarios_bd")
         except mysql.connector.Error as e:
             print(f"Aconteceu algo de errado ao usar o banco de dados: {e}")
 
@@ -63,39 +59,6 @@ class GerenciadorBD:
             self.conn.commit()
         except mysql.connector.Error as e:
             print(f"Aconteceu algo de errado ao criar a tabela Users: {e}")
-
-
-    def criar_tabela_categorias_despesas(self):
-        try:
-            cursor = self.conn.cursor()
-            cursor.execute("""CREATE TABLE IF NOT EXISTS Categorias_Despesas (
-                                id INT AUTO_INCREMENT PRIMARY KEY,
-                                nome_categoria VARCHAR(255) NOT NULL
-                            )""")
-            print("Tabela Categorias_Despesas criada com sucesso")
-            self.conn.commit()
-        except mysql.connector.Error as e:
-            print(f"Aconteceu algo de errado ao criar a tabela Categorias_Despesas: {e}")
-
-
-    def criar_tabela_despesas(self):
-        try:
-            cursor = self.conn.cursor()
-            cursor.execute("""CREATE TABLE IF NOT EXISTS Despesas (
-                                id INT AUTO_INCREMENT PRIMARY KEY,
-                                user_id INT NOT NULL,
-                                categoria_id INT NOT NULL,
-                                data DATE,
-                                info VARCHAR(255),
-                                valor DECIMAL(10, 2),
-                                FOREIGN KEY (user_id) REFERENCES Users(id),
-                                FOREIGN KEY (categoria_id) REFERENCES Categorias_Despesas(id)
-                            )""")
-            print("Tabela Despesas criada com sucesso")
-            self.conn.commit()
-        except mysql.connector.Error as e:
-            print(f"Aconteceu algo de errado ao criar a tabela Despesas: {e}")
-
     
     def cadastrar(self, nomeUsuario, usuarioSenha):
         senha = self.criptografar_senha(usuarioSenha)
@@ -161,8 +124,3 @@ class GerenciadorBD:
 
         except mysql.connector.Error as e:
             print(f"Aconteceu um erro: {e}")
-
-
-"""
-app = GerenciadorBD()
-app.cadastrar("hugo", "hg123456")"""

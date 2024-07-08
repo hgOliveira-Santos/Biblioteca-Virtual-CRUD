@@ -7,28 +7,14 @@ class InterfaceInicial(ctk.CTk):
     def __init__(self):
         super().__init__()
         self.layout_config()
-        self.aparência()
-        #self.sistema()
-        self.interface_login()
+        self.interface_cadastro()
         self.gerenciador = GerenciadorBD()
 
     def layout_config(self):
         self.geometry("1000x550+450+200")
         self.title("Despesas Pessoais")
         self.resizable(False, False)
-
-    def aparência(self):
         ctk.set_appearance_mode("light")
-
-    """    def sistema(self):
-        #head_frame = ctk.CTkFrame(master=self, width=1000, height=80, bg_color="#037899", fg_color="#037899")
-        #head_frame.place(x=0, y=0)
-
-        imagem = Image.open('images/dinheiro.jpg')
-        imagem_dinheiro = ImageTk.PhotoImage(imagem)
-
-        imagem_label = ctk.CTkLabel(master=self, image=imagem_dinheiro)
-        imagem_label.place(x=500)"""
 
 
     def interface_cadastro(self):
@@ -146,7 +132,6 @@ class InterfaceInicial(ctk.CTk):
 
     def fazer_login(self):
         pass
-
 
 
     def limpa_tela(self):
