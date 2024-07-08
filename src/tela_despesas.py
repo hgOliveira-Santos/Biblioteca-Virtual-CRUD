@@ -27,34 +27,30 @@ class InterfaceDespesas(ctk.CTk):
         head_label = ctk.CTkLabel(master=head_frame, text=f"Despesas de: {self.nomeUsuário}", font=("Roboto bold", 24), bg_color="#012", fg_color="#012")
         head_label.place(relx=0.5, rely=0.5, anchor=ctk.CENTER)
 
-        aba_despesas = ctk.CTkFrame(master=self, width=900, height=350, fg_color="#014", bg_color="#014", corner_radius=0)
-        aba_despesas.place(x=0, y=150)
-
-        aba_adicionar_despesa = ctk.CTkFrame(master=self)
-
-
-        aba_gráficos = ctk.CTkFrame(master=self)
-
-        despesas_bt = ctk.CTkButton(master=self, text="Despesas", width=300, height=50, corner_radius=0, fg_color="#014")
+        despesas_bt = ctk.CTkButton(master=self, command=self.interface_despesas, text="Despesas", width=300, height=50, corner_radius=0, fg_color="#004")
         despesas_bt.place(x=0, y=100)
 
-        adicionar_bt = ctk.CTkButton(master=self, text="Adicionar despesa", width=300, height=50, corner_radius=0, fg_color="#016")
+        adicionar_bt = ctk.CTkButton(master=self, command=self.interface_adicionar_despesa, text="Adicionar despesa", width=300, height=50, corner_radius=0, fg_color="#006")
         adicionar_bt.place(x=300, y=100)
 
-        gráficos_bt = ctk.CTkButton(master=self, text="Gráficos", width=300, height=50, corner_radius=0, fg_color="#018")
+        gráficos_bt = ctk.CTkButton(master=self, command=self.interface_gráficos, text="Gráficos", width=300, height=50, corner_radius=0, fg_color="#008")
         gráficos_bt.place(x=600, y=100)
 
+        self.interface_despesas()
+
     
-    def mostrar_despesas(self):
-        pass
+    def interface_despesas(self):
+        aba_despesas = ctk.CTkFrame(master=self, width=900, height=350, fg_color="#004", bg_color="#014", corner_radius=0)
+        aba_despesas.place(x=0, y=150)
+
+    def interface_adicionar_despesa(self):
+        aba_adicionar_despesa = ctk.CTkFrame(master=self, width=900, height=350, fg_color="#006", bg_color="#014", corner_radius=0)
+        aba_adicionar_despesa.place(x=0, y=150)
 
 
-    def adicionar_despesa(self):
-        pass
-
-
-    def gráficos(self):
-        pass
+    def interface_gráficos(self):
+        aba_gráficos = ctk.CTkFrame(master=self, width=900, height=350, fg_color="#008", bg_color="#014", corner_radius=0)
+        aba_gráficos.place(x=0, y=150)
 
     def limpa_tela(self):
         for item in self.winfo_children():
