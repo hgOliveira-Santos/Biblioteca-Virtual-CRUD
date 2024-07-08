@@ -11,7 +11,7 @@ class InterfaceInicial(ctk.CTk):
         self.gerenciador = GerenciadorBD()
 
     def layout_config(self):
-        self.geometry("1000x550+450+200")
+        self.geometry("500x550+700+200")
         self.title("Despesas Pessoais")
         self.resizable(False, False)
         ctk.set_appearance_mode("light")
@@ -20,13 +20,6 @@ class InterfaceInicial(ctk.CTk):
     def interface_cadastro(self):
 
         self.limpa_tela()
-
-        imagem = Image.open('images/dinheiro.jpg')
-        imagem_dinheiro = ImageTk.PhotoImage(imagem)
-
-        imagem_label = ctk.CTkLabel(master=self, image=imagem_dinheiro)
-        imagem_label.place(x=500)
-
 
         self.usuário_value = ctk.StringVar()
         self.senha_value = ctk.StringVar()
@@ -40,8 +33,6 @@ class InterfaceInicial(ctk.CTk):
 
         usuário_input = ctk.CTkEntry(master=self, textvariable=self.usuário_value, width=420, corner_radius=10, fg_color="transparent", font=('Century Gothic', 16), text_color="#000")
         usuário_input.place(x=40, y=180)
-
-        #self.verifica_nome_usuário()
 
         senha_label = ctk.CTkLabel(master=self, text="Senha: ", font=('Roboto', 16), text_color="#000")
         senha_label.place(x=40, y=220)
@@ -94,13 +85,6 @@ class InterfaceInicial(ctk.CTk):
     def interface_login(self):
 
         self.limpa_tela()
-
-        imagem = Image.open('images/dinheiro.jpg')
-        imagem_dinheiro = ImageTk.PhotoImage(imagem)
-
-        imagem_label = ctk.CTkLabel(master=self, image=imagem_dinheiro)
-        imagem_label.place(x=500)
-
 
         conta_label  = ctk.CTkLabel(master=self, text="Login", font=('Century Gothic', 26), text_color="#000")
         conta_label.place(x=215, y=100)
