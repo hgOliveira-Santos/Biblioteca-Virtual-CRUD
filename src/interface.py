@@ -1,5 +1,4 @@
 import customtkinter as ctk
-from PIL import Image, ImageTk
 from tkinter import messagebox
 from gerenciador import GerenciadorBD
 
@@ -59,27 +58,29 @@ class InterfaceInicial(ctk.CTk):
     def fazer_cadastro(self):
 
         if len(self.usuário_value.get()) < 4:
-            messagebox.showwarning("Erro", "O nome de usuário deve ter pelo menos 4 caracteres!")
+            messagebox.showwarning("Aviso", "O nome de usuário deve ter pelo menos 4 caracteres!")
             return
         else:
             conf_nome_usuário = self.gerenciador.verificar_nome_usuário(self.usuário_value.get())
             if not conf_nome_usuário:
-                messagebox.showerror("Erro", "Nome de usuário já cadastrado!")
+                messagebox.showwarning("Aviso", "Nome de usuário já cadastrado!")
                 return
         
         if len(self.senha_value.get()) < 8:
-            messagebox.showerror("Aviso", "Sua senha deve ter pelo menos 8 caracteres!")
+            messagebox.showwarning("Aviso", "Sua senha deve ter pelo menos 8 caracteres!")
             return
         
         if self.senha_value.get() != self.confirmar_senha_value.get():
-            messagebox.showerror("Aviso", "As senhas fornecidas são diferentes!")
+            messagebox.showwarning("Aviso", "As senhas fornecidas são diferentes!")
             return
         
-        if self.gerenciador.cadastrar(self.usuário_value.get(), self.senha_value.get()):
-            #chamada para a próxima interface
-            pass
+        if self.gerenciador.cadastrar(self.usuário_value.get(), self.senha_value.get()):  
+            messagebox.showinfo("Cadastro", "Usuário cadastrado com sucesso!")
+            self.destroy()
         else:
             messagebox.showerror("Erro", "Erro ao cadastrar usuário!")
+
+    
 
 
     def interface_login(self):
