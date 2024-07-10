@@ -1,6 +1,6 @@
 import customtkinter as ctk
 from tkinter import messagebox
-from gerenciador import GerenciadorBD
+from gerenciador_bd import GerenciadorBD
 
 class InterfaceInicial(ctk.CTk):
     def __init__(self):
@@ -56,7 +56,6 @@ class InterfaceInicial(ctk.CTk):
 
 
     def fazer_cadastro(self):
-
         if len(self.usuário_value.get()) < 4:
             messagebox.showwarning("Aviso", "O nome de usuário deve ter pelo menos 4 caracteres!")
             return
@@ -79,8 +78,6 @@ class InterfaceInicial(ctk.CTk):
             self.destroy()
         else:
             messagebox.showerror("Erro", "Erro ao cadastrar usuário!")
-
-    
 
 
     def interface_login(self):
@@ -105,8 +102,8 @@ class InterfaceInicial(ctk.CTk):
         senha_input = ctk.CTkEntry(master=self, textvariable=self.senha_value, show="*", width=420, corner_radius=10, fg_color="transparent")
         senha_input.place(x=40, y=260)
 
-        cadastrar_bt = ctk.CTkButton(master=self, text="Entrar", command=self.interface_login, width=420, height=35, corner_radius=10, fg_color="#039999", hover_color="#046979")
-        cadastrar_bt.place(x=40, y=310)
+        entrar_bt = ctk.CTkButton(master=self, text="Entrar", command=self.fazer_login, width=420, height=35, corner_radius=10, fg_color="#039999", hover_color="#046979")
+        entrar_bt.place(x=40, y=310)
 
         não_possui_conta_label = ctk.CTkLabel(master=self, text="Não possui uma conta?", text_color="#012", font=("Roboto", 12))
         não_possui_conta_label.place(x=90, y=360)
@@ -116,7 +113,11 @@ class InterfaceInicial(ctk.CTk):
 
 
     def fazer_login(self):
-        pass
+        if self.gerenciador.login(self.usuário_value.get(), self.senha_value.get()):
+            messagebox.showinfo("Entrando", "Usuário aceito!")
+            self.destroy()
+        else:
+            messagebox.showerror("Erro", "Erro ao fazer login!")
 
 
     def limpa_tela(self):
