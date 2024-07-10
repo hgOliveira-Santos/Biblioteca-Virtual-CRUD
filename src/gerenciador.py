@@ -50,7 +50,7 @@ class GerenciadorBD:
     def criar_tabela_users(self):
         try:
             cursor = self.conn.cursor()
-            cursor.execute("""CREATE TABLE IF NOT EXISTS Users (
+            cursor.execute("""CREATE TABLE IF NOT EXISTS users (
                                 id INT AUTO_INCREMENT PRIMARY KEY,
                                 username VARCHAR(255) NOT NULL,
                                 password VARCHAR(255) NOT NULL
@@ -58,7 +58,7 @@ class GerenciadorBD:
             print("Tabela Users criada com sucesso")
             self.conn.commit()
         except mysql.connector.Error as e:
-            print(f"Aconteceu algo de errado ao criar a tabela Users: {e}")
+            print(f"Aconteceu algo de errado ao criar a tabela users: {e}")
     
     def cadastrar(self, nomeUsuario, usuarioSenha):
         senha = self.criptografar_senha(usuarioSenha)
@@ -70,31 +70,41 @@ class GerenciadorBD:
             self.conn.commit()
             print("Usuário cadastrado")
             return True
+        
         except mysql.connector.Error as e:
             print(f"Erro ao cadastrar usuário: {e}")
             return False
-        
-    def login(self, nomeUsuário, usuárioSenha):
-        if self.verifica_login(nomeUsuário, usuárioSenha):
-            pass
-        
 
-    def verifica_login(self, nome, senha):
+    def login(self, nomeUsuario, usuarioSenha):
         try:
             cursor = self.conn.cursor()
-            query = "SELECT COUNT(*) FROM Users WHERE username = %s"
-            cursor.execute(query, (nome, senha,))
-            resultado = cursor.fetchone()[0]
 
-            if resultado == 1:
-                print("Usuário aceito!")
-                return True
+            # Verificar se o usuário existe
+            queryUsuario = "SELECT COUNT(*) FROM users WHERE username = %s"
+            cursor.execute(queryUsuario, (nomeUsuario,))
+            usuarioExiste = cursor.fetchone()[0]
+
+            if usuarioExiste == 1:
+                # Recuperar o hash da senha do banco de dados
+                querySenha = "SELECT password FROM users WHERE username = %s"
+                cursor.execute(querySenha, (nomeUsuario,))
+                hashed_password = cursor.fetchone()[0]
+
+                # Verificar a senha usando bcrypt
+                if bcrypt.checkpw(usuarioSenha.encode('utf-8'), hashed_password.encode('utf-8')):
+                    print("Usuário está no sistema!")
+                    return True
+                else:
+                    print("Você digitou a senha errada!")
+                    return False
             else:
                 print("Usuário não cadastrado!")
                 return False
             
         except Exception as e:
             print(f"Erro ao verificar login: {e}")
+            return False
+
 
 
     def criptografar_senha(self, senha):
