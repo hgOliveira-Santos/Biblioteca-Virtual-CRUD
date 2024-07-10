@@ -125,6 +125,6 @@ class InterfaceInicial(ctk.CTk):
             item.destroy()
 
 
-
-teste = InterfaceInicial()
-teste.mainloop()
+if __name__ == "__main__":
+    app = InterfaceInicial()
+    app.mainloop()
